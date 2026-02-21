@@ -20,9 +20,7 @@ A shared knowledge repository for [opencode-remote-brain](https://www.npmjs.com/
 3. Register in your OpenCode `config.json`:
    ```json
    {
-     "plugins": {
-       "remote-brain": "opencode-remote-brain"
-     }
+     "plugins": ["opencode-remote-brain"]
    }
    ```
 
