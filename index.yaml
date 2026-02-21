@@ -1,0 +1,8 @@
+version: 1
+rules:
+  - rules/agent-rules.md
+skills:
+  - skills/superspec-init
+  - skills/superspec-research
+  - skills/superspec-plan
+  - skills/superspec-implement
