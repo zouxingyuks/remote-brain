@@ -2,20 +2,7 @@
 
 A shared knowledge repository for [opencode-remote-brain](https://www.npmjs.com/package/opencode-remote-brain).
 
-## Structure
-
-```
-index.yaml                          # Entry point — declares rules and skills
-rules/                              # Markdown files injected as OpenCode instructions
-  agent-rules.md                    # Tool usage & language conventions
-skills/                             # Skill directories (each must contain SKILL.md)
-  superspec-init/SKILL.md           # Project initialization
-  superspec-research/SKILL.md       # Research & analysis
-  superspec-plan/SKILL.md           # Planning & design
-  superspec-implement/SKILL.md      # Implementation
-```
-
-## Usage
+## Setup
 
 1. Install the plugin:
    ```bash
@@ -26,7 +13,7 @@ skills/                             # Skill directories (each must contain SKILL
    ```jsonc
    {
      "repo": "zouxingyuks/remote-brain",
-     "ref": "main"
+     "ref": "master"
    }
    ```
 
@@ -39,24 +26,9 @@ skills/                             # Skill directories (each must contain SKILL
    }
    ```
 
-## Content
-
-### Rules
-
-| File | Description |
-|------|-------------|
-| `rules/agent-rules.md` | Serena, Context7, sequential thinking 工具使用规范；中英文语言约定 |
-
-### Skills
-
-| Skill | Description |
-|-------|-------------|
-| `superspec-init` | 项目初始化 |
-| `superspec-research` | 调研与分析 |
-| `superspec-plan` | 规划与设计 |
-| `superspec-implement` | 实现与编码 |
-
 ## Adding Content
+
+All rules and skills are declared in `index.yaml`. The plugin reads this file as the single source of truth.
 
 ### Rules
 
