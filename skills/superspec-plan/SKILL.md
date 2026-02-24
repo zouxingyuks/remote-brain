@@ -2,9 +2,9 @@
 name: superspec-plan
 description: Produce an OPSX 1.0 thin-wrapper zero-decision plan with one-question-at-a-time Interview Gate, Oracle convergence loops, and strict OpenSpec validation.
 category: superspec
-tags: [superspec, plan, opsx, pbt]
+tags: [ superspec, plan, opsx, pbt ]
 allowed-tools: Bash(openspec:*), Bash(rg:*), Bash(test:*), Bash(ls:*)
-argument-hint: [change_id]
+argument-hint: [ change_id ]
 ---
 
 <!-- SUPERSPEC:PLAN:START -->
@@ -22,6 +22,7 @@ argument-hint: [change_id]
 - 任何无法确定的约束必须回问用户，禁止猜测。
 - 禁止把旧冲突台账文件作为真值来源。
 - 禁止依赖旧 markdown linter 脚本。
+- 每个任务必须使用 `test-driven-development` skill；`TDD:` 字段不得为空或 SKIP。
 
 ## Required Files（Plan 阶段）
 
@@ -57,15 +58,17 @@ argument-hint: [change_id]
 - `Resolved In: <Interview-x|Oracle-x|User-y>`
 
 并继续保留：`Files:` / `Acceptance Criteria:` / `TDD:` / `Verify:`（及 `Verify (RED):` 若 TDD REQUIRED）。
+> **硬性约束**：`TDD:` 字段必须填写，且必须声明使用 `test-driven-development` skill（格式：`REQUIRED — skill: test-driven-development`）。空值或 `SKIP`
+> 视为校验失败。
 
 ## Steps
 
 0. **Resolve `change_id`**
 
 - 若未提供 `change_id`：
-  1) 运行 `openspec list --json`
-  2) 让用户选择
-  3) 使用选中的 `<change_id>` 继续
+    1) 运行 `openspec list --json`
+    2) 让用户选择
+    3) 使用选中的 `<change_id>` 继续
 
 1. **前置校验（严格）**
 
@@ -89,11 +92,12 @@ argument-hint: [change_id]
 每次回答后必须立即固化：
 
 - 更新 `design.md`：
-  - Decision Log（明确选择与参数）
-  - `## Open Questions Ledger` 对应项改为 RESOLVED
+    - Decision Log（明确选择与参数）
+    - `## Open Questions Ledger` 对应项改为 RESOLVED
 - 更新 `tasks.md`：
-  - 补齐/修正 `Files`、`Acceptance Criteria`、`TDD`、`Verify`
-  - 填写 `Decision Source`、`Resolved In`
+    - 补齐/修正 `Files`、`Acceptance Criteria`、`TDD`、`Verify`
+    - `TDD:` 字段必须填写为 `REQUIRED — skill: test-driven-development`（不得为空或 SKIP）
+    - 填写 `Decision Source`、`Resolved In`
 - 运行严格校验：`openspec validate <change_id> --strict --no-interactive --json`
 
 4. **@oracle 多轮收敛（>=5 轮）**
@@ -101,11 +105,11 @@ argument-hint: [change_id]
 - 至少执行 5 轮 `@oracle` 约束收敛审查（可超过 5 轮直到收敛）。
 - 调用要求固定：`Return Unified Diff Patch only; do not modify files`。
 - 每轮流程：
-  1) `@oracle` 输出约束补丁建议（只读）
-  2) 主代理归一化为可执行约束
-  3) writer 更新 `design.md` 与 `tasks.md`
-  4) 将新发现问题写入 `Open Questions Ledger`（OPEN/RESOLVED）
-  5) 运行 `openspec validate <change_id> --strict --no-interactive --json`
+    1) `@oracle` 输出约束补丁建议（只读）
+    2) 主代理归一化为可执行约束
+    3) writer 更新 `design.md` 与 `tasks.md`
+    4) 将新发现问题写入 `Open Questions Ledger`（OPEN/RESOLVED）
+    5) 运行 `openspec validate <change_id> --strict --no-interactive --json`
 
 收敛判定（全部满足）：
 
@@ -116,8 +120,8 @@ argument-hint: [change_id]
 5. **PBT 属性提取（必须保留）**
 
 - 对每条核心需求补齐 PBT 属性：
-  - `INVARIANT`
-  - `FALSIFICATION STRATEGY`
+    - `INVARIANT`
+    - `FALSIFICATION STRATEGY`
 - 建议覆盖：幂等性、交换/结合、round-trip、不变量保持、单调性、边界约束。
 - PBT 结论记录进 `design.md`，并将对应任务的 `Decision Source` / `Resolved In` 回填到 `tasks.md`。
 
@@ -125,9 +129,9 @@ argument-hint: [change_id]
 
 - 运行：`openspec validate <change_id> --strict --no-interactive --json`
 - 且人工检查：
-  - `design.md` 存在 `## Open Questions Ledger`
-  - Ledger 中 OPEN=0
-  - `tasks.md` 每个任务都有 `Decision Source`、`Resolved In`
+    - `design.md` 存在 `## Open Questions Ledger`
+    - Ledger 中 OPEN=0
+    - `tasks.md` 每个任务都有 `Decision Source`、`Resolved In`
 
 ## Anti-Patterns（Reject）
 
@@ -135,6 +139,7 @@ argument-hint: [change_id]
 - 少于 5 轮 @oracle 就声称收敛（违例）。
 - 继续使用旧冲突台账文件作为开放问题真值（违例）。
 - 依赖旧 markdown linter 门禁（违例）。
+- `tasks.md` 中任意任务的 `TDD:` 字段为空、缺失或含 `SKIP`（违例）。
 
 ## Exit Criteria
 
@@ -143,11 +148,13 @@ argument-hint: [change_id]
 - `@oracle` 收敛满足：>=5 轮并完成收敛。
 - `design.md` 的 `Open Questions Ledger`：OPEN=0。
 - `tasks.md` 任务字段完整（含 `Decision Source` / `Resolved In`）。
+- `tasks.md` 所有任务的 `TDD:` 字段均为 `REQUIRED — skill: test-driven-development`。
 
 ## Exit Report（Standard）
 
 - Active change: `<change_id>`
-- Gates: `openspec validate <change_id> --strict --no-interactive --json`, Interview Gate(一次一问, 至少5问), @oracle收敛(>=5轮), Open Questions Ledger OPEN=0
+- Gates: `openspec validate <change_id> --strict --no-interactive --json`, Interview Gate(一次一问, 至少5问), @oracle收敛(>=5轮), Open Questions
+  Ledger OPEN=0
 - Next: `/superspec-implement <change_id>`
 
 <!-- SUPERSPEC:PLAN:END -->
