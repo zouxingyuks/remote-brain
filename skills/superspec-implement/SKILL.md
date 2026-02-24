@@ -59,15 +59,38 @@ argument-hint: [change_id]
      - Record those paths under `Deferred Scope` section in `openspec/changes/<change_id>/tasks.md` as `NEXT-CHANGE`.
      - Do not expand current task scope.
 
-6. **Mark Task Completion**
-   - After passing verify + scope audit, check corresponding `- [x]` items in `tasks.md`.
+6. **Phase Review**
+   - Review all changes in this phase against the task block spec and the overall `tasks.md` intent.
+   - Classify each finding:
+     - **Fixable** (implementation bug, missing logic, style violation): fix immediately within the same scope, re-run verify + scope audit, then re-review.
+     - **Spec conflict** (implementation contradicts or is ambiguous against the spec): STOP. Present the conflict clearly to the human:
+       ```
+       SPEC CONFLICT DETECTED
+       Task: <task block name>
+       Conflict: <what the implementation does vs what the spec says>
+       Options:
+         A) <option A>
+         B) <option B>
+       Awaiting your decision before proceeding.
+       ```
+     - Wait for human decision. Apply the chosen resolution, then re-run verify + scope audit + review.
+   - Review passes only when no fixable issues remain and all spec conflicts are resolved.
 
-7. **Repeat Until All Checked**
-   - Loop steps 4-6 until no unchecked task remains.
+7. **Phase Commit**
+   - After review passes, commit all staged changes for this phase:
+     - `git add` only files in the current task block `Files:` whitelist.
+     - Commit message format: `[<change_id>] <task block name>: <one-line summary>`
+   - Do NOT squash or amend previous phase commits.
 
-8. **Archive**
-   - Run: `openspec validate <change_id> --strict --no-interactive --json`
-   - Run: `openspec archive <change_id> --yes`
+8. **Mark Task Completion**
+   - After commit succeeds, check corresponding `- [x]` items in `tasks.md`.
+
+9. **Repeat Until All Checked**
+   - Loop steps 4-8 until no unchecked task remains.
+
+10. **Archive**
+    - Run: `openspec validate <change_id> --strict --no-interactive --json`
+    - Run: `openspec archive <change_id> --yes`
 
 **Exit Criteria**
 
